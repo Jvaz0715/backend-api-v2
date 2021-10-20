@@ -8,10 +8,23 @@ const User = require("../model/User"); // <--- Our "template" we created for wha
 async function getAllUsers(req, res) {
    try {
       let foundAllUsers = await User.find({});
-
       res.json({message: "success", data: foundAllUsers})
    } catch(e){
       res.status(500).json({message: "error", error: e.message })
+   }
+};
+
+// ==================== Leave above as is!
+
+// Make validator functions simplified rather than multiple if statements
+
+// check if ANY input is empty: dynamic
+
+function checkIsEmpty(target) {
+   if (target.length === 0) {
+      return true;
+   } else {
+      return false;
    }
 }
 
@@ -24,6 +37,29 @@ async function signup(req, res) {
       firstName,
       lastName
    } = req.body; // <--- we would get this from form input by user
+
+   // we declare an error object that will populate with which target we put if empty
+   let errorObj = {};
+   // make checks below
+   if(checkIsEmpty(username)) {
+      errorObj.username = "username cannot be empty";
+   };
+   if(checkIsEmpty(firstName)) {
+      errorObj.firstName = "first name cannot be empty";
+   };
+   if(checkIsEmpty(lastName)) {
+      errorObj.lastName = "last Name cannot be empty";
+   };
+   if(checkIsEmpty(password)) {
+      errorObj.password = "password cannot be empty";
+   };
+   if(checkIsEmpty(email)) {
+      errorObj.email = "email cannot be empty";
+   };
+   
+   if(Object.keys(errorObj).length > 0) {
+      res.status(500).json({message: "failure", payload: errorObj })
+   };
 
    // try/catch below
    try {
