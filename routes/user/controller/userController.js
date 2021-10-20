@@ -1,4 +1,11 @@
 const bcrypt = require("bcryptjs"); // <--- Will hash passwords to protect in database
+const {
+   isAlpha,
+   isAlphanumeric,
+   isStrongPassword,
+   isEmail,
+} = require("validator");
+
 const User = require("../model/User"); // <--- Our "template" we created for what a new user will need
 
 // create POST or signup function that will be exported for use in userRouter
@@ -13,6 +20,16 @@ async function getAllUsers(req, res) {
       res.status(500).json({message: "error", error: e.message })
    }
 };
+
+// for deleting users,
+async function deleteUserById(req, res) {
+   try {
+      let deletedUser = await User.findByIdAndDelete(req.params.id);
+      res.json({message: "success", data: deletedUser })
+   } catch(e) {
+      res.status(500).json({ message: "error", error: e.message })
+   }
+}
 
 // ==================== Leave above as is!
 
@@ -61,9 +78,33 @@ async function signup(req, res) {
    if(checkIsEmpty(email)) {
       errorObj.email = "email cannot be empty";
    };
-   
+
+   // check first and last name are alpha
+   if(!isAlpha(firstName)) {
+      errorObj.firstNameWrongFormat = "First name can only contain alpha";
+   };
+
+   if(!isAlpha(lastName)) {
+      errorObj.lastNameWrongFormat = "Last name can only contain alpha";
+   };
+
+   // user name is alphanumeric
+   if(!isAlphanumeric(username)) {
+      errorObj.wrongUsernameFormat = "Only use letters and numbers for username";
+   }
+   // make sure email
+   if(!isEmail(email)){
+      errorObj.wrongEmailFormat = "Please enter a valid email";
+   };
+
+    // validate password strength
+   if(!isStrongPassword(password) && password.length !== 0) {
+      errorObj.weakPassword = "password must include 1 lowercase, 1 uppercase, 1 special character, a number and a length of 8";
+   };
+
+   // last line of defense
    if(Object.keys(errorObj).length > 0) {
-      res.status(500).json({message: "failure", payload: errorObj })
+      return res.status(500).json({message: "failure", payload: errorObj })
    };
 
    // try/catch below
@@ -91,5 +132,6 @@ async function signup(req, res) {
 
 module.exports = {
    signup,
-   getAllUsers
+   getAllUsers,
+   deleteUserById,
 }
