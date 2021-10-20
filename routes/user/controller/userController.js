@@ -39,6 +39,11 @@ async function signup(req, res) {
    } = req.body; // <--- we would get this from form input by user
 
    // we declare an error object that will populate with which target we put if empty
+   
+   if (Object.keys(req.body).length === 0) {
+      return res.status(500).json({ message: "Please fill out the form !"});
+   }
+   // we declare an error object that will populate with which target we put if empty
    let errorObj = {};
    // make checks below
    if(checkIsEmpty(username)) {
