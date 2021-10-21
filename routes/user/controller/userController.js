@@ -64,14 +64,14 @@ async function signup(req, res) {
       }
    };
 
-   // check first and last name are alpha
-   if(!checkIsAlpha(firstName)) {
-      errorObj.firstNameWrongFormat = "First name can only contain alpha";
-   };
-
-   if(!checkIsAlpha(lastName)) {
-      errorObj.lastNameWrongFormat = "Last name can only contain alpha";
-   };
+   // check first and last name are alpha, rather than two separate checks, names could be done dynamically
+   for (key in req.body) {
+      if (key === "firstName" || key === "lastName"){
+         if(!checkIsAlpha(req.body[key])){
+            errorObj[`${key}Error`] = `${key} can only have characters`;
+         }
+      }
+   }
 
    // user name is alphanumeric
    if(!checkIsAlphanumeric(username)) {
