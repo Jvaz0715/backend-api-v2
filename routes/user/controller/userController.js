@@ -1,12 +1,15 @@
 const bcrypt = require("bcryptjs"); // <--- Will hash passwords to protect in database
 const {
-   isAlpha,
    isAlphanumeric,
-   isStrongPassword,
    isEmail,
 } = require("validator");
 
 const User = require("../model/User"); // <--- Our "template" we created for what a new user will need
+const {
+   checkIsEmpty,
+   checkIsStrongPassword,
+   checkIsAlpha,
+} = require("../../utils/authMethods");
 
 // create POST or signup function that will be exported for use in userRouter
 // we use async/await for our functions for cleaner code
@@ -33,17 +36,14 @@ async function deleteUserById(req, res) {
 
 // ==================== Leave above as is!
 
-// Make validator functions simplified rather than multiple if statements
-
-// check if ANY input is empty: dynamic
-
-function checkIsEmpty(target) {
-   if (target.length === 0) {
-      return true;
-   } else {
-      return false;
-   }
-}
+// we do not need this now that we have it in authMethods.js
+// function checkIsEmpty(target) {
+//    if (target.length === 0) {
+//       return true;
+//    } else {
+//       return false;
+//    }
+// }
 
 // async function signup
 async function signup(req, res) {
@@ -55,36 +55,47 @@ async function signup(req, res) {
       lastName
    } = req.body; // <--- we would get this from form input by user
 
-   // we declare an error object that will populate with which target we put if empty
-   
+   // this is checking length of all the keys in req.body
+      // i.e. req.body.username.length, etc...
    if (Object.keys(req.body).length === 0) {
       return res.status(500).json({ message: "Please fill out the form !"});
    }
    // we declare an error object that will populate with which target we put if empty
    let errorObj = {};
-   // make checks below
-   if(checkIsEmpty(username)) {
-      errorObj.username = "username cannot be empty";
-   };
-   if(checkIsEmpty(firstName)) {
-      errorObj.firstName = "first name cannot be empty";
-   };
-   if(checkIsEmpty(lastName)) {
-      errorObj.lastName = "last Name cannot be empty";
-   };
-   if(checkIsEmpty(password)) {
-      errorObj.password = "password cannot be empty";
-   };
-   if(checkIsEmpty(email)) {
-      errorObj.email = "email cannot be empty";
-   };
+   
+   // make empty checks: D.R.Y.
+   
+   for (let key in req.body) {
+      if(checkIsEmpty(req.body[key])) {
+         errorObj[key] = `${key} cannot be empty`
+      }
+   }
+
+   /*
+   // make empty checks: NOT D.R.Y.
+   // if(checkIsEmpty(username)) {
+   //    errorObj.username = "username cannot be empty";
+   // };
+   // if(checkIsEmpty(firstName)) {
+   //    errorObj.firstName = "first name cannot be empty";
+   // };
+   // if(checkIsEmpty(lastName)) {
+   //    errorObj.lastName = "last Name cannot be empty";
+   // };
+   // if(checkIsEmpty(password)) {
+   //    errorObj.password = "password cannot be empty";
+   // };
+   // if(checkIsEmpty(email)) {
+   //    errorObj.email = "email cannot be empty";
+   // };
+   */
 
    // check first and last name are alpha
-   if(!isAlpha(firstName)) {
+   if(!checkIsAlpha(firstName)) {
       errorObj.firstNameWrongFormat = "First name can only contain alpha";
    };
 
-   if(!isAlpha(lastName)) {
+   if(!checkIsAlpha(lastName)) {
       errorObj.lastNameWrongFormat = "Last name can only contain alpha";
    };
 
@@ -98,7 +109,7 @@ async function signup(req, res) {
    };
 
     // validate password strength
-   if(!isStrongPassword(password) && password.length !== 0) {
+   if(!checkIsStrongPassword(password) && password.length !== 0) {
       errorObj.weakPassword = "password must include 1 lowercase, 1 uppercase, 1 special character, a number and a length of 8";
    };
 
