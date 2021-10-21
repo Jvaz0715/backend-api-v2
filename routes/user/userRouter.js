@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
    signup,
+   login,
    getAllUsers,
    deleteUserById
 } = require("./controller/userController");
@@ -29,6 +30,14 @@ router.post(
    checkIsEmailFunc, 
    checkIsStrongPasswordFunc,
    signup
+);
+
+// we use POST for login, which will reuse some functions from signup
+router.post(
+   "/login",
+   checkIsUndefined, 
+   checkIsEmptyFunc,
+   login
 );
 
 module.exports = router;

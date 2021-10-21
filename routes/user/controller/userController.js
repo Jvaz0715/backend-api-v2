@@ -61,8 +61,25 @@ async function signup(req, res) {
    }
 };
 
+// login
+async function login(req, res) {
+   const { email, password } = req.body;
+   const { errorObj } = res.locals;
+
+   if(Object.keys(errorObj).length >0) {
+      return res.status(500).json({message: "failure", payload: errorObj})
+   }
+
+   try{
+
+   } catch(e) {
+      res.json({message: "error", error: e})
+   }
+};
+
 module.exports = {
    signup,
+   login,
    getAllUsers,
    deleteUserById,
 }
