@@ -1,10 +1,8 @@
 const bcrypt = require("bcryptjs"); // <--- Will hash passwords to protect in database
 const User = require("../model/User"); // <--- Our "template" we created for what a new user will need
 const {
-   checkIsStrongPassword,
    checkIsAlpha,
    checkIsAlphanumeric,
-   checkIsEmail,
 } = require("../../utils/authMethods");
 
 // for testing, create a get all users function
@@ -52,15 +50,6 @@ async function signup(req, res) {
    if(!checkIsAlphanumeric(username)) {
       errorObj.wrongUsernameFormat = "Only use letters and numbers for username";
    }
-   // make sure email
-   if(!checkIsEmail(email)){
-      errorObj.wrongEmailFormat = "Please enter a valid email";
-   };
-
-    // validate password strength
-   if(!checkIsStrongPassword(password)) {
-      errorObj.weakPassword = "password must include 1 lowercase, 1 uppercase, 1 special character, a number and a length of 8";
-   };
 
    // last line of defense
    if(Object.keys(errorObj).length > 0) {
