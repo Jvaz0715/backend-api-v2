@@ -3,16 +3,13 @@
 const {checkIsEmpty} = require('../../utils/authMethods');
 
 function checkIsEmptyFunc(req, res, next) {
-   let errorObj = {};
-      
+   // let errorObj = {};
+   // REF: http://expressjs.com/en/5x/api.html#res.locals
+   const { errorObj } =res.locals;
    for (let key in req.body) {
       if(checkIsEmpty(req.body[key])) {
          errorObj[key] = `${key} cannot be empty`;
       }
-   };
-
-   if(Object.keys(errorObj).length > 0) {
-      return res.status(500).json({message: "failure", payload: errorObj })
    };
 
    next();

@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
 const {
    signup,
    getAllUsers,
    deleteUserById
 } = require("./controller/userController");
-
 const checkIsUndefined = require('./helpers/checkIsUndefined');
 const checkIsEmptyFunc = require("./helpers/checkIsEmptyFunc");
 const checkIsAlphaFunc = require("./helpers/checkIsAlphaFunc");

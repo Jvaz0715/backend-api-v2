@@ -1,9 +1,12 @@
 const { checkIsAlphanumeric } = require("../../utils/authMethods");
 
 function checkIsAlphanumericFunc(req, res, next) {
-   // user name is alphanumeric
+    // let errorObj = {};
+   // REF: http://expressjs.com/en/5x/api.html#res.locals
+   const { errorObj } =res.locals;
+
    if(!checkIsAlphanumeric(req.body.username)) {
-      return res.status(500).json({message: "Only use letters and numbers for username"});
+      errorObj.usernameFormat = "Only use letters and numbers for username";
    };
 
    next();

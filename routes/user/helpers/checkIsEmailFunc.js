@@ -1,11 +1,14 @@
 const { checkIsEmail } = require("../../utils/authMethods");
 
 function checkIsEmailFunc(req, res, next) {
-   // make sure email
+   // let errorObj = {};
+   // REF: http://expressjs.com/en/5x/api.html#res.locals
+   const { errorObj } =res.locals;
+
    if(!checkIsEmail(req.body.email)){
-      return res.status(500).json({message: "Please enter a valid email"}) ;
+      errorObj.wrongEmailFormat = "Please enter a valid email";
    };
-   
+
    next();
 };
 
