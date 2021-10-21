@@ -1,20 +1,11 @@
 const bcrypt = require("bcryptjs"); // <--- Will hash passwords to protect in database
-const {
-   isAlphanumeric,
-   isEmail,
-} = require("validator");
-
 const User = require("../model/User"); // <--- Our "template" we created for what a new user will need
 const {
-   checkIsEmpty,
    checkIsStrongPassword,
    checkIsAlpha,
    checkIsAlphanumeric,
    checkIsEmail,
 } = require("../../utils/authMethods");
-
-// create POST or signup function that will be exported for use in userRouter
-// we use async/await for our functions for cleaner code
 
 // for testing, create a get all users function
 async function getAllUsers(req, res) {
@@ -26,7 +17,7 @@ async function getAllUsers(req, res) {
    }
 };
 
-// for deleting users,
+// for deleting users
 async function deleteUserById(req, res) {
    try {
       let deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -36,9 +27,7 @@ async function deleteUserById(req, res) {
    }
 }
 
-// ==================== Leave above as is!
-
-// async function signup
+// signup
 async function signup(req, res) {
    const {
       username,
@@ -48,21 +37,7 @@ async function signup(req, res) {
       lastName
    } = req.body; // <--- we would get this from form input by user
 
-   // this is checking length of all the keys in req.body
-      // i.e. req.body.username.length, etc...
-   if (Object.keys(req.body).length === 0) {
-      return res.status(500).json({ message: "Please fill out the form !"});
-   }
-   // we declare an error object that will populate with which target we put if empty
    let errorObj = {};
-   
-   // make empty checks: D.R.Y.
-   
-   for (let key in req.body) {
-      if(checkIsEmpty(req.body[key])) {
-         errorObj[key] = `${key} cannot be empty`;
-      }
-   };
 
    // check first and last name are alpha, rather than two separate checks, names could be done dynamically
    for (key in req.body) {
@@ -71,7 +46,7 @@ async function signup(req, res) {
             errorObj[`${key}Error`] = `${key} can only have characters`;
          }
       }
-   }
+   };
 
    // user name is alphanumeric
    if(!checkIsAlphanumeric(username)) {
@@ -92,7 +67,7 @@ async function signup(req, res) {
       return res.status(500).json({message: "failure", payload: errorObj })
    };
 
-   // try/catch below
+   // after all logic is handled, we do try/catch
    try {
 
       let salt = await bcrypt.genSalt(12);
