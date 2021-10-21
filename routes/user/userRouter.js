@@ -9,8 +9,9 @@ const {
 
 const checkIsUndefined = require('./helpers/checkIsUndefined');
 const checkIsEmptyFunc = require("./helpers/checkIsEmptyFunc");
+const checkIsAlphaFunc = require("./helpers/checkIsAlphaFunc");
+const checkIsAlphanumericFunc = require("./helpers/checkIsAlphanumericFunc");
 const checkIsEmailFunc = require("./helpers/checkIsEmailFunc");
-const checkIsStrongPassword = require("./helpers/checkIsStrongPasswordFunc");
 const checkIsStrongPasswordFunc = require("./helpers/checkIsStrongPasswordFunc");
 
 // to track users created, create getAllUsers GET
@@ -22,6 +23,8 @@ router.post(
    "/sign-up", 
    checkIsUndefined, 
    checkIsEmptyFunc,
+   checkIsAlphaFunc,
+   checkIsAlphanumericFunc,
    checkIsEmailFunc, 
    checkIsStrongPasswordFunc,
    signup

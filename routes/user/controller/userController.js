@@ -1,9 +1,5 @@
-const bcrypt = require("bcryptjs"); // <--- Will hash passwords to protect in database
-const User = require("../model/User"); // <--- Our "template" we created for what a new user will need
-const {
-   checkIsAlpha,
-   checkIsAlphanumeric,
-} = require("../../utils/authMethods");
+const bcrypt = require("bcryptjs");
+const User = require("../model/User"); 
 
 // for testing, create a get all users function
 async function getAllUsers(req, res) {
@@ -35,28 +31,13 @@ async function signup(req, res) {
       lastName
    } = req.body; // <--- we would get this from form input by user
 
-   let errorObj = {};
+   // let errorObj = {};
 
-   // check first and last name are alpha, rather than two separate checks, names could be done dynamically
-   for (key in req.body) {
-      if (key === "firstName" || key === "lastName"){
-         if(!checkIsAlpha(req.body[key])){
-            errorObj[`${key}Error`] = `${key} can only have characters`;
-         }
-      }
-   };
+   // // last line of defense
+   // if(Object.keys(errorObj).length > 0) {
+   //    return res.status(500).json({message: "failure", payload: errorObj })
+   // };
 
-   // user name is alphanumeric
-   if(!checkIsAlphanumeric(username)) {
-      errorObj.wrongUsernameFormat = "Only use letters and numbers for username";
-   }
-
-   // last line of defense
-   if(Object.keys(errorObj).length > 0) {
-      return res.status(500).json({message: "failure", payload: errorObj })
-   };
-
-   // after all logic is handled, we do try/catch
    try {
 
       let salt = await bcrypt.genSalt(12);
