@@ -8,7 +8,7 @@ function checkIsAlphaFunc(req, res, next) {
    for (key in req.body) {
       if (key === "firstName" || key === "lastName"){
          if(!checkIsAlpha(req.body[key])) {
-            errorObj[`${key}`] = `${key} can only have characters`;
+            errorObj[`${key}Format`] = `${key} can only have characters`;
          };
       };
    };

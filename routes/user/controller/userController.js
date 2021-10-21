@@ -30,13 +30,14 @@ async function signup(req, res) {
       firstName,
       lastName
    } = req.body; // <--- we would get this from form input by user
+   
+   // REF: http://expressjs.com/en/5x/api.html#res.locals
+   const { errorObj } =res.locals;
 
-   // let errorObj = {};
-
-   // // last line of defense
-   // if(Object.keys(errorObj).length > 0) {
-   //    return res.status(500).json({message: "failure", payload: errorObj })
-   // };
+   // last line of defense
+   if(Object.keys(errorObj).length > 0) {
+      return res.status(500).json({message: "failure", payload: errorObj })
+   };
 
    try {
 
