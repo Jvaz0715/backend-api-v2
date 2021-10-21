@@ -19,7 +19,7 @@ async function deleteUserById(req, res) {
    } catch(e) {
       res.status(500).json({ message: "error", error: e.message })
    }
-}
+};
 
 // signup
 async function signup(req, res) {
@@ -71,6 +71,25 @@ async function login(req, res) {
    }
 
    try{
+      // first we need to check if the user even exists
+      // we use the .findOne method to look for a matching email
+      // if a user is found, foundUser will be an object with the user information, and a encrypted password
+      let foundUser = await User.findOne({email: email });
+      
+      // if no user is found, respond with 400 status code
+      if (!foundUser) {
+         res.status(400).json({ message: "failure", payload: "check your email and password"});
+      } else {
+         // if there is indeed a foundUser, we need to work on comparing the password using bcryptjs
+         let comparedPassword = await bcrypt.compare(password, foundUser.password);
+         // if passwords dont match send back message
+         if (!comparedPassword) {
+            res.status(400).json({ message: "failure", payload: "check your email and password"});
+         } else {
+            // if they do match, send back success message
+            res.json({message: "success", payload: "user logged in"});
+         }
+      }
 
    } catch(e) {
       res.json({message: "error", error: e})
