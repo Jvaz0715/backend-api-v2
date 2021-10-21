@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../model/User"); 
 
 // for testing, create a get all users function
@@ -86,8 +87,23 @@ async function login(req, res) {
          if (!comparedPassword) {
             res.status(400).json({ message: "failure", payload: "check your email and password"});
          } else {
+            // jwt jsonwebtoken
+            // the fist argument is the object containing only the information you want to expose
+            // the second argument is the secret key which should be cloaked in dotenv!
+            // the third argument is an object with a expiresIn key and a time limit
+            let jwtToken = jwt.sign({
+               email: foundUser.email,
+                  username: foundUser.username,
+               },
+               process.env.PRIVATE_JWT_KEY,
+               {
+                  expiresIn: "1d"
+               }
+            );
+
+
             // if they do match, send back success message
-            res.json({message: "success", payload: "user logged in"});
+            res.json({message: "success", payload: jwtToken});
          }
       }
 
