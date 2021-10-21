@@ -5,12 +5,15 @@ const {
    getAllUsers,
    deleteUserById
 } = require("./controller/userController");
-const checkIsUndefined = require('./helpers/checkIsUndefined');
-const checkIsEmptyFunc = require("./helpers/checkIsEmptyFunc");
-const checkIsAlphaFunc = require("./helpers/checkIsAlphaFunc");
-const checkIsAlphanumericFunc = require("./helpers/checkIsAlphanumericFunc");
-const checkIsEmailFunc = require("./helpers/checkIsEmailFunc");
-const checkIsStrongPasswordFunc = require("./helpers/checkIsStrongPasswordFunc");
+
+const {
+   checkIsUndefined,
+   checkIsEmptyFunc,
+   checkIsAlphaFunc,
+   checkIsAlphanumericFunc,
+   checkIsEmailFunc,
+   checkIsStrongPasswordFunc,
+} = require("./helpers/authMiddleware");
 
 // to track users created, create getAllUsers GET
 router.get("/get-all-users", getAllUsers);
