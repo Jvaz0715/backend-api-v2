@@ -9,6 +9,8 @@ const {
    checkIsEmpty,
    checkIsStrongPassword,
    checkIsAlpha,
+   checkIsAlphanumeric,
+   checkIsEmail,
 } = require("../../utils/authMethods");
 
 // create POST or signup function that will be exported for use in userRouter
@@ -36,15 +38,6 @@ async function deleteUserById(req, res) {
 
 // ==================== Leave above as is!
 
-// we do not need this now that we have it in authMethods.js
-// function checkIsEmpty(target) {
-//    if (target.length === 0) {
-//       return true;
-//    } else {
-//       return false;
-//    }
-// }
-
 // async function signup
 async function signup(req, res) {
    const {
@@ -67,28 +60,9 @@ async function signup(req, res) {
    
    for (let key in req.body) {
       if(checkIsEmpty(req.body[key])) {
-         errorObj[key] = `${key} cannot be empty`
+         errorObj[key] = `${key} cannot be empty`;
       }
-   }
-
-   /*
-   // make empty checks: NOT D.R.Y.
-   // if(checkIsEmpty(username)) {
-   //    errorObj.username = "username cannot be empty";
-   // };
-   // if(checkIsEmpty(firstName)) {
-   //    errorObj.firstName = "first name cannot be empty";
-   // };
-   // if(checkIsEmpty(lastName)) {
-   //    errorObj.lastName = "last Name cannot be empty";
-   // };
-   // if(checkIsEmpty(password)) {
-   //    errorObj.password = "password cannot be empty";
-   // };
-   // if(checkIsEmpty(email)) {
-   //    errorObj.email = "email cannot be empty";
-   // };
-   */
+   };
 
    // check first and last name are alpha
    if(!checkIsAlpha(firstName)) {
@@ -100,16 +74,16 @@ async function signup(req, res) {
    };
 
    // user name is alphanumeric
-   if(!isAlphanumeric(username)) {
+   if(!checkIsAlphanumeric(username)) {
       errorObj.wrongUsernameFormat = "Only use letters and numbers for username";
    }
    // make sure email
-   if(!isEmail(email)){
+   if(!checkIsEmail(email)){
       errorObj.wrongEmailFormat = "Please enter a valid email";
    };
 
     // validate password strength
-   if(!checkIsStrongPassword(password) && password.length !== 0) {
+   if(!checkIsStrongPassword(password)) {
       errorObj.weakPassword = "password must include 1 lowercase, 1 uppercase, 1 special character, a number and a length of 8";
    };
 
